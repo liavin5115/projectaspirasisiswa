@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Models\Siswa;
 use Filament\Actions;
+use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -17,6 +19,31 @@ class SiswaResource extends Resource
     protected static ?string $singularModelLabel = 'NIS';
 
     protected static ?string $pluralModelLabel = 'NIS Siswa';
+
+    public static function form(Schemas\Schema $schema): Schemas\Schema
+    {
+        return $schema
+            ->schema([
+                Forms\Components\TextInput::make('nis')
+                    ->label('NIS')
+                    ->required()
+                    ->unique(table: 'siswas', column: 'nis', ignoreRecord: true)
+                    ->maxLength(20)
+                    ->placeholder('Masukkan NIS Siswa'),
+
+                Forms\Components\TextInput::make('nama')
+                    ->label('Nama Siswa')
+                    ->required()
+                    ->maxLength(255)
+                    ->placeholder('Masukkan Nama Siswa'),
+
+                Forms\Components\TextInput::make('kelas')
+                    ->label('Kelas')
+                    ->required()
+                    ->maxLength(50)
+                    ->placeholder('Contoh: 10A, 11B, 12C'),
+            ]);
+    }
 
     public static function table(Table $table): Table
     {
