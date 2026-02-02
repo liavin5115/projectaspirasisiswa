@@ -1,59 +1,99 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aspirasi Siswa — Sistem Pengaduan Aspirasi Siswa 🏫
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Sistem sederhana untuk siswa mengirim aspirasi menggunakan NIS (tanpa login)** dan admin menindaklanjuti lewat panel Filament.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ⚙️ Ringkasan Fitur
+- Pengiriman aspirasi publik (input NIS saja) — route: `GET /aspirasi/kirim`, `POST /aspirasi/kirim` ✅
+- Cek riwayat & status berdasarkan NIS — route: `GET /aspirasi/cek`, `POST /aspirasi/cek` ✅
+- Panel admin Filament untuk mengelola aspirasi & follow-up — path: `/admin` ✅
+- Manajemen NIS (resource `Siswa`) ✅
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🧰 Teknologi & Persyaratan
+- PHP 8.2+ (dijalankan di proyek ini: PHP 8.4)
+- Laravel 12
+- MySQL (wajib)
+- Filament (admin)
+- Tailwind CSS untuk UI publik
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🚀 Setup Singkat (lokal)
+1. Clone repo
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+   git clone <repo-url>
+   cd projectaspirasisiswa
 
-## Laravel Sponsors
+2. Install dependency
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+   composer install
+   npm install && npm run build
 
-### Premium Partners
+3. Salin file environment dan konfigurasi DB
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+   cp .env.example .env
+   # sesuaikan DB_* di .env (MySQL)
 
-## Contributing
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=aspiraasi_db
+   DB_USERNAME=root
+   DB_PASSWORD=
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. Migrate & seed (membuat tabel dan data uji)
 
-## Code of Conduct
+   php artisan migrate --seed
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+5. Jalankan server
 
-## Security Vulnerabilities
+   php artisan serve
+   # buka http://localhost:8000
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🧪 Data uji & Akun Admin
+- Beberapa NIS uji tersedia melalui seeder (`SiswaSeeder`):
+  - 12345, 12346, 12347, 12348, 12349, 12350
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Akun admin (default seeder / setup):
+  - Email: `admin@rahasia.com`
+  - Password: `admin123!@#`
+
+> Gunakan panel admin di `http://localhost:8000/admin` untuk mengelola aspirasi, menambah feedback, dan mengubah status.
+
+---
+
+## 🗂 Struktur penting
+- app/Models — `Siswa`, `InputAspirasi`, `Aspirasi`, `User`
+- app/Http/Controllers/AspirationController.php — kontrol publik untuk submit/cek
+- resources/views/aspirations — view publik (submit, check, result)
+- resources/views/chat — (dihapus) *folder tetap berisi placeholder halaman* jika ada rute tersisa
+- app/Filament/Resources — resource admin (Siswa, InputAspirasi, Aspirasi, User)
+- database/migrations — semua migrasi tabel
+
+---
+
+## 🔧 Catatan terkait chat
+- Fitur _floating chat_ dihapus dari halaman publik (semua `@include('components.floating-chat')` telah dibersihkan).
+- Halaman chat (`resources/views/chat/*`) diganti menjadi halaman pemberitahuan bahwa fitur telah dihapus.
+- Jika Anda ingin menghapus folder chat sepenuhnya atau menonaktifkan rute terkait, beri tahu saya dan saya akan bantu hapus rute + view.
+
+---
+
+## ✅ Perintah berguna
+- Clear view cache: `php artisan view:clear`
+- Clear app cache: `php artisan cache:clear`
+- Jalankan test: `php artisan test` atau `vendor/bin/pest`
+
+---
+
+## 📄 Lisensi
+Proyek ini mengikuti lisensi MIT.
+
+---
+
+Terima kasih — jika mau, saya bisa menambahkan badge, petunjuk deploy Docker, atau langkah CI/CD. ✨
