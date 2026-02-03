@@ -41,10 +41,6 @@ class InputAspirasiResource extends Resource
                     ->dateTime('d-m-Y H:i'),
             ])
             ->filters([
-<<<<<<< HEAD
-                //
-            ])
-=======
                 Tables\Filters\SelectFilter::make('kategori')
                     ->label('Kategori')
                     ->options([
@@ -56,7 +52,6 @@ class InputAspirasiResource extends Resource
                     ]),
             ])
             ->searchable(['nis', 'kategori', 'lokasi', 'keterangan'])
->>>>>>> d6f488c (Added new features and fixed repo connection)
             ->actions([
                 Actions\EditAction::make()
                     ->label('Follow Up'),
