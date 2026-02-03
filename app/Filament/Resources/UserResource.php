@@ -4,9 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Models\User;
 use Filament\Actions;
+use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -14,6 +17,28 @@ class UserResource extends Resource
     protected static ?string $navigationLabel = 'Pengguna Admin';
     protected static ?string $singularModelLabel = 'Pengguna';
     protected static ?string $pluralModelLabel = 'Pengguna';
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema
+            ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->label('Nama')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                    ->label('Email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('password')
+                    ->label('Password')
+                    ->password()
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn (string $operation): bool => $operation === 'create'),
+            ]);
+    }
 
     public static function table(Table $table): Table
     {
@@ -32,10 +57,13 @@ class UserResource extends Resource
             ->filters([
                 //
             ])
+            ->headerActions([
+                Actions\CreateAction::make()
+                    ->label('Tambah Admin'),
+            ])
             ->actions([
-                Actions\Action::make('edit')
-                    ->label('Edit')
-                    ->icon('heroicon-o-pencil'),
+                Actions\EditAction::make()
+                    ->label('Edit'),
                 Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -56,6 +84,7 @@ class UserResource extends Resource
     {
         return [
             'index' => \App\Filament\Resources\UserResource\Pages\ListUsers::route('/'),
+            'create' => \App\Filament\Resources\UserResource\Pages\CreateUser::route('/create'),
             'edit' => \App\Filament\Resources\UserResource\Pages\EditUser::route('/{record}/edit'),
         ];
     }
