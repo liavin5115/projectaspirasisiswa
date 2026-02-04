@@ -49,6 +49,12 @@ class SiswaResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('no')
+                    ->label('No.')
+                    ->getStateUsing(static function ($rowLoop) {
+                        return $rowLoop->iteration;
+                    }),
+
                 Tables\Columns\TextColumn::make('nis')
                     ->label('NIS')
                     ->searchable()
