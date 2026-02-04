@@ -51,8 +51,14 @@ class SiswaResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('no')
                     ->label('No.')
-                    ->getStateUsing(static function ($rowLoop) {
-                        return $rowLoop->iteration;
+                    ->rowIndex(true)
+                    ->getStateUsing(function ($record, $livewire) {
+                        $page = $livewire->getTablePage() ?? 1;
+                        $perPage = $livewire->getTableRecordsPerPage() ?? 10;
+                        $index = $livewire->getTableRecords()->search(function ($item) use ($record) {
+                            return $item->getKey() === $record->getKey();
+                        });
+                        return (($page - 1) * $perPage) + $index + 1;
                     }),
 
                 Tables\Columns\TextColumn::make('nis')
